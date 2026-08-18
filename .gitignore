@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+checkpoints/
+data/*.bin
+data/transcripts/
+data/judge_train/
+.wandb/
+*.egg-info/

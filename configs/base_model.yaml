@@ -1,0 +1,32 @@
+model:
+  vocab_size: 32000
+  n_layer: 12
+  n_head: 12
+  n_embd: 768
+  block_size: 1024
+  dropout: 0.1
+  bias: false
+
+pretrain:
+  # Warm-start (recommended): point this at an existing small open-weight
+  # causal LM instead of training from scratch. src/model/pretrain.py loads
+  # its weights + tokenizer directly and skips the from-scratch loop below.
+  # Set to null to force a from-scratch run (see "closing the gap" in the
+  # README for why warm-start is the default recommendation, not scratch).
+  warm_start_from: "EleutherAI/pythia-160m"
+
+  # only read when warm_start_from is null
+  data_dir: "data/tokenized"
+  out_dir: "checkpoints/base_model"
+  device: "cuda"
+  dtype: "bfloat16"          # float32 | bfloat16 | float16
+  batch_size: 32
+  grad_accum_steps: 4
+  max_iters: 60000
+  warmup_iters: 1000
+  learning_rate: 3.0e-4
+  weight_decay: 0.1
+  grad_clip: 1.0
+  eval_interval: 500
+  eval_iters: 50
+  compile: true

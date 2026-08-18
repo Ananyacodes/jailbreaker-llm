@@ -1,0 +1,58 @@
+rl:
+  algorithm: "ppo"                       # SimplePPOTrainer, custom -- see src/attacker/ppo_trainer.py
+  # A DIRECTORY when warm-starting (the default -- src/model/pretrain.py's
+  # warm_start() saves the HF model straight into pretrain.out_dir). Only
+  # change this to a "*.pt" FILE if you deliberately set
+  # configs/base_model.yaml: pretrain.warm_start_from to null and ran the
+  # from-scratch loop instead (then use "checkpoints/base_model/latest.pt").
+  base_checkpoint: "checkpoints/base_model"
+  tokenizer_path: "checkpoints/base_model/tokenizer"   # dir for warm-started HF tokenizer, or .json for from-scratch
+  judge_checkpoint: "checkpoints/judge_model/judge_latest.pt"
+  out_dir: "checkpoints/attacker_model"
+  seed_prompts_path: "data/seed_prompts.txt"
+
+  batch_size: 16
+  ppo_epochs: 4
+  learning_rate: 1.0e-5
+  kl_coef: 0.05             # keeps the attacker from degenerating into gibberish that "wins" trivially
+  clip_range: 0.2
+  vf_coef: 0.5
+  gae_lambda: 0.95
+  max_new_tokens: 128
+  num_rollouts: 20000
+
+  reward:
+    success_reward: 1.0
+    partial_success_reward: 0.3
+    refusal_penalty: -0.1
+    degenerate_output_penalty: -1.0
+    diversity_coef: 0.4          # weight on the embedding-similarity penalty, see src/attacker/reward.py
+    diversity_buffer_size: 200   # rolling window of recent successful attacks compared against
+
+target:
+  # which target the attacker trains against -- start with ONE, see
+  # "still open" in the README for why fleet/multi-target isn't here yet
+  mode: "local"                  # "local" or "api", see src/targets/
+  local_model_name: "your-authorized-local-target"
+  api_base_url: null
+  api_key_env_var: null
+  circuit_breaker_threshold: 5   # consecutive auth/4xx errors before halting the run
+
+agent:
+  max_turns: 6
+  branch_candidates: 3           # best-of-N candidate next-turns per step, see src/agent/multi_turn_loop.py
+  escalate_threshold: 0.6
+  retreat_threshold: 0.7
+
+attacker:
+  tokenizer_path: "checkpoints/base_model/tokenizer"
+  # A DIRECTORY when the attacker was RL fine-tuned from a warm-started
+  # base (GPTWithValueHead.save_pretrained writes the hf model straight
+  # into this dir). Only a "*.pt" file on the from-scratch path.
+  checkpoint_path: "checkpoints/attacker_model"
+
+eval_judge:
+  classifier_checkpoint: "checkpoints/judge_model/judge_latest.pt"
+  llm_judge_base_url: null       # optional OpenAI-compatible endpoint for the LLM-as-judge half of the ensemble
+  llm_judge_api_key_env_var: null
+  llm_judge_model: null

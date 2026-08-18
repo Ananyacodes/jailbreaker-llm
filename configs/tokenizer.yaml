@@ -1,0 +1,12 @@
+# Only used for a deliberate from-scratch run. A warm-started base model
+# (see configs/base_model.yaml: pretrain.warm_start_from) brings its own
+# tokenizer -- vocab and embedding table are tied to those weights, so
+# training a custom tokenizer alongside a warm-started base doesn't apply.
+corpus_dir: "data/corpus"
+vocab_size: 32000
+out_path: "checkpoints/tokenizer/tokenizer.json"
+special_tokens:
+  - "<pad>"
+  - "<bos>"
+  - "<eos>"
+  - "<unk>"
