@@ -9,5 +9,10 @@ requests>=2.31
 tqdm>=4.66
 pytest>=7.4
 
-# optional
+pandas>=2.0
+matplotlib>=3.7
+seaborn>=0.12
+hmmlearn>=0.3
+scipy>=1.11
+
 wandb>=0.16

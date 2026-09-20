@@ -8,18 +8,13 @@ model:
   bias: false
 
 pretrain:
-  # Warm-start (recommended): point this at an existing small open-weight
-  # causal LM instead of training from scratch. src/model/pretrain.py loads
-  # its weights + tokenizer directly and skips the from-scratch loop below.
-  # Set to null to force a from-scratch run (see "closing the gap" in the
-  # README for why warm-start is the default recommendation, not scratch).
   warm_start_from: "EleutherAI/pythia-160m"
 
-  # only read when warm_start_from is null
   data_dir: "data/tokenized"
   out_dir: "checkpoints/base_model"
   device: "cuda"
-  dtype: "bfloat16"          # float32 | bfloat16 | float16
+  dtype: "bfloat16"
+
   batch_size: 32
   grad_accum_steps: 4
   max_iters: 60000

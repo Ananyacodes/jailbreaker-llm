@@ -1,13 +1,3 @@
-"""
-Minimal GPT-style decoder-only transformer, nanoGPT-scale.
-Deliberately small and readable over "efficient" -- the point of this file
-is that you understand every line of your own model, not that it's SOTA.
-
-Only used for a from-scratch pretraining run. A warm-started base model
-(see src/model/pretrain.py) loads an existing HF causal LM instead and
-never touches this class directly, but GPTWithValueHead (src/attacker/
-value_head.py) still needs a shared interface either way -- see that file.
-"""
 import math
 from dataclasses import dataclass
 
@@ -37,12 +27,7 @@ class CausalSelfAttention(nn.Module):
         self.proj = nn.Linear(cfg.n_embd, cfg.n_embd, bias=cfg.bias)
         self.attn_dropout = nn.Dropout(cfg.dropout)
         self.resid_dropout = nn.Dropout(cfg.dropout)
-        self.register_buffer(
-            "mask",
-            torch.tril(torch.ones(cfg.block_size, cfg.block_size)).view(
-                1, 1, cfg.block_size, cfg.block_size
-            ),
-        )
+        self.register_buffer('mask', torch.tril(torch.ones(cfg.block_size, cfg.block_size)).view(1, 1, cfg.block_size, cfg.block_size))
 
     def forward(self, x):
         B, T, C = x.shape
@@ -51,9 +36,8 @@ class CausalSelfAttention(nn.Module):
         q = q.view(B, T, self.n_head, head_dim).transpose(1, 2)
         k = k.view(B, T, self.n_head, head_dim).transpose(1, 2)
         v = v.view(B, T, self.n_head, head_dim).transpose(1, 2)
-
-        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(head_dim))
-        att = att.masked_fill(self.mask[:, :, :T, :T] == 0, float("-inf"))
+        att = q @ k.transpose(-2, -1) * (1.0 / math.sqrt(head_dim))
+        att = att.masked_fill(self.mask[:, :, :T, :T] == 0, float('-inf'))
         att = F.softmax(att, dim=-1)
         att = self.attn_dropout(att)
         y = att @ v
@@ -97,8 +81,7 @@ class GPT(nn.Module):
         self.blocks = nn.ModuleList([Block(cfg) for _ in range(cfg.n_layer)])
         self.ln_f = nn.LayerNorm(cfg.n_embd)
         self.head = nn.Linear(cfg.n_embd, cfg.vocab_size, bias=False)
-        self.tok_emb.weight = self.head.weight  # weight tying
-
+        self.tok_emb.weight = self.head.weight
         self.apply(self._init_weights)
 
     def _init_weights(self, module):
@@ -111,30 +94,27 @@ class GPT(nn.Module):
 
     def forward(self, idx, targets=None):
         B, T = idx.shape
-        assert T <= self.cfg.block_size, "sequence longer than block_size"
+        assert T <= self.cfg.block_size, 'sequence longer than block_size'
         pos = torch.arange(0, T, device=idx.device)
         x = self.dropout(self.tok_emb(idx) + self.pos_emb(pos))
         for block in self.blocks:
             x = block(x)
         x = self.ln_f(x)
         logits = self.head(x)
-
         loss = None
         if targets is not None:
-            loss = F.cross_entropy(
-                logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1
-            )
-        return logits, loss
+            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
+        return (logits, loss)
 
     @torch.no_grad()
     def generate(self, idx, max_new_tokens, temperature=1.0, top_k=None):
         for _ in range(max_new_tokens):
-            idx_cond = idx[:, -self.cfg.block_size :]
+            idx_cond = idx[:, -self.cfg.block_size:]
             logits, _ = self(idx_cond)
             logits = logits[:, -1, :] / temperature
             if top_k is not None:
                 v, _ = torch.topk(logits, top_k)
-                logits[logits < v[:, [-1]]] = float("-inf")
+                logits[logits < v[:, [-1]]] = float('-inf')
             probs = F.softmax(logits, dim=-1)
             next_id = torch.multinomial(probs, num_samples=1)
             idx = torch.cat((idx, next_id), dim=1)

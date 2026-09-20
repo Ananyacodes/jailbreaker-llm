@@ -13,7 +13,7 @@ def test_requires_exactly_one_of_cfg_or_hf_model_name():
     with pytest.raises(ValueError):
         GPTWithValueHead()
     with pytest.raises(ValueError):
-        GPTWithValueHead(cfg=_small_cfg(), hf_model_name="some/model")
+        GPTWithValueHead(cfg=_small_cfg(), hf_model_name='some/model')
 
 
 def test_scratch_backend_forward_shapes():
@@ -34,11 +34,10 @@ def test_scratch_backend_generate_extends_sequence():
 def test_from_pretrained_gpt_roundtrip(tmp_path):
     cfg = _small_cfg()
     gpt = GPT(cfg)
-    ckpt_path = tmp_path / "latest.pt"
-    torch.save({"model": gpt.state_dict(), "config": cfg, "iter": 0}, ckpt_path)
-
-    loaded = GPTWithValueHead.from_pretrained_gpt(str(ckpt_path), "cpu")
-    assert loaded.backend == "scratch"
+    ckpt_path = tmp_path / 'latest.pt'
+    torch.save({'model': gpt.state_dict(), 'config': cfg, 'iter': 0}, ckpt_path)
+    loaded = GPTWithValueHead.from_pretrained_gpt(str(ckpt_path), 'cpu')
+    assert loaded.backend == 'scratch'
     assert loaded.gpt.cfg.vocab_size == cfg.vocab_size
     for p1, p2 in zip(gpt.parameters(), loaded.gpt.parameters()):
         assert torch.equal(p1, p2)
@@ -46,8 +45,8 @@ def test_from_pretrained_gpt_roundtrip(tmp_path):
 
 def test_make_reference_is_frozen():
     model = GPTWithValueHead(cfg=_small_cfg())
-    ref = model.make_reference("cpu")
-    assert all(not p.requires_grad for p in ref.parameters())
+    ref = model.make_reference('cpu')
+    assert all((not p.requires_grad for p in ref.parameters()))
     x = torch.randint(0, 50, (6,))
     logits = ref.logits(x)
     assert logits.shape == (1, 6, 50)

@@ -1,5 +1,0 @@
-# One opening conversation-starter per line. These are NOT attacks --
-# they're neutral-looking seeds the multi-turn agent escalates from using
-# the technique library (src/attacker/technique_library.py). Populate this
-# with prompts relevant to your authorized target's actual use case before
-# running a campaign; this file intentionally ships empty of real content.

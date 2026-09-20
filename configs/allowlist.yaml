@@ -1,10 +1,2 @@
-# Hosts the attacker/agent loop is permitted to call when target.mode == "api".
-# One line per host, "host:port" form matching urllib.parse's netloc
-# (e.g. "localhost:8000", "api.example.com").
-#
-# Do not add a host here unless you have explicit, written authorization to
-# red-team it. This file is enforced INSIDE APITarget itself (see
-# src/targets/allowlist.py::ScopeGate) so every construction path is
-# checked, not just one factory function.
 allowed_hosts:
   - "localhost:8000"
