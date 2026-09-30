@@ -1,0 +1,8 @@
+corpus_dir: "data/corpus"
+vocab_size: 32000
+out_path: "checkpoints/tokenizer/tokenizer.json"
+special_tokens:
+  - "<pad>"
+  - "<bos>"
+  - "<eos>"
+  - "<unk>"

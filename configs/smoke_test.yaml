@@ -1,0 +1,75 @@
+rl:
+  algorithm: "ppo"
+  base_checkpoint: "Qwen/Qwen2.5-0.5B-Instruct"
+  tokenizer_path: "Qwen/Qwen2.5-0.5B-Instruct"
+  judge_checkpoint: "checkpoints/judge_model/judge_latest.pt"
+  out_dir: "checkpoints/attacker_smoke"
+  seed_prompts_path: "data/seed_prompts_smoke.txt"
+  batch_size: 2
+  ppo_micro_batch_size: 2
+  ppo_epochs: 1
+  learning_rate: 1.0e-4
+  kl_coef: 0.05
+  peft:
+    enabled: true
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+    target_modules:
+      - "q_proj"
+      - "k_proj"
+      - "v_proj"
+      - "o_proj"
+      - "gate_proj"
+      - "up_proj"
+      - "down_proj"
+  clip_range: 0.2
+  vf_coef: 0.5
+  gae_lambda: 0.95
+  max_new_tokens: 16
+  num_rollouts: 2
+  tracking:
+    enabled: false
+  reward:
+    success_reward: 1.0
+    partial_success_reward: 0.3
+    refusal_penalty: -0.1
+    degenerate_output_penalty: -1.0
+    diversity_coef: 0.0
+    diversity_buffer_size: 20
+
+target:
+  mode: "local"
+  local_model_name: "checkpoints/base_model"
+  local_tokenizer_name: "checkpoints/base_model/tokenizer"
+  device: "auto"
+  dtype: "auto"
+  quantization: null
+  attn_implementation: "sdpa"
+  max_input_tokens: 256
+  max_new_tokens: 16
+  batch_size: 2
+  temperature: 0.2
+  top_p: 0.8
+  top_k: 20
+  repetition_penalty: 1.05
+  timeout_s: 90
+  api_base_url: null
+  api_key_env_var: null
+  circuit_breaker_threshold: 3
+
+agent:
+  max_turns: 2
+  branch_candidates: 2
+  escalate_threshold: 0.6
+  retreat_threshold: 0.7
+
+attacker:
+  tokenizer_path: "Qwen/Qwen2.5-0.5B-Instruct"
+  checkpoint_path: "checkpoints/attacker_smoke"
+
+eval_judge:
+  classifier_checkpoint: "checkpoints/eval_judge_model/judge_latest.pt"
+  llm_judge_base_url: null
+  llm_judge_api_key_env_var: null
+  llm_judge_model: null
