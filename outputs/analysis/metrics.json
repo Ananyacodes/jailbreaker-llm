@@ -10,16 +10,16 @@
     "r2": 0.9349161528854354
   },
   "classification_logistic_regression": {
-    "accuracy": 0.519774011299435,
-    "f1_macro": 0.3731884057971014
+    "accuracy": 0.5254237288135594,
+    "f1_macro": 0.40857296219615064
   },
   "classification_random_forest": {
-    "accuracy": 0.5141242937853108,
-    "f1_macro": 0.46876588551058157
+    "accuracy": 0.519774011299435,
+    "f1_macro": 0.46287612650953563
   },
   "classification_svm_rbf": {
-    "accuracy": 0.536723163841808,
-    "f1_macro": 0.48966712226782244
+    "accuracy": 0.559322033898305,
+    "f1_macro": 0.509630662742755
   },
   "clustering_kmeans": {
     "ari_vs_true_state": 0.9240387875653813,
@@ -35,5 +35,9 @@
     "accuracy_after_state_matching": 0.950920245398773,
     "ari_vs_true_state": 0.8678822708730156,
     "log_likelihood": 1819.2207310573308
+  },
+  "classification_hist_gradient_boosting": {
+    "accuracy": 0.5310734463276836,
+    "f1_macro": 0.47978666213960325
   }
 }
