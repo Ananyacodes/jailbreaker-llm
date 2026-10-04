@@ -76,3 +76,5 @@ def conversation_train_test_split(df: pd.DataFrame, test_frac: float = 0.2, seed
     n_test = int(len(conv_ids) * test_frac)
     test_ids = set(conv_ids[:n_test])
     test_mask = df['conversation_id'].isin(test_ids)
+
+    return (df[~test_mask].copy(), df[test_mask].copy())
