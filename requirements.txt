@@ -18,3 +18,11 @@ hmmlearn>=0.3
 scipy>=1.11
 
 wandb>=0.16
+streamlit
+datasets      # only for the Anthropic red-team download
+jupyter       # optional: notebooks/
+nbformat
+ipykernel
+hmmlearn
+scipy
+matplotlib
