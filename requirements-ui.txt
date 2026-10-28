@@ -1,0 +1,8 @@
+streamlit
+datasets      # only for the Anthropic red-team download
+jupyter       # optional: notebooks/
+nbformat
+ipykernel
+hmmlearn
+scipy
+matplotlib

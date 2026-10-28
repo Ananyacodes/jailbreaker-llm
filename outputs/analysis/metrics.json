@@ -5,9 +5,9 @@
     "r2": 0.921405037681005
   },
   "regression_random_forest": {
-    "rmse": 0.06754640322730998,
-    "mae": 0.05008341230953427,
-    "r2": 0.9349161528854354
+    "rmse": 0.06762316778867546,
+    "mae": 0.05012694923293524,
+    "r2": 0.9347681369521446
   },
   "classification_logistic_regression": {
     "accuracy": 0.5254237288135594,
@@ -34,10 +34,50 @@
   "hmm": {
     "accuracy_after_state_matching": 0.950920245398773,
     "ari_vs_true_state": 0.8678822708730156,
-    "log_likelihood": 1819.2207310573308
+    "log_likelihood": 1819.2207310573297
   },
   "classification_hist_gradient_boosting": {
     "accuracy": 0.5310734463276836,
     "f1_macro": 0.47978666213960325
+  },
+  "pca_numpy": {
+    "explained_variance_ratio": [
+      0.6771,
+      0.3229,
+      0.0
+    ],
+    "components_kept": 2
+  },
+  "kmeans_numpy": {
+    "ari_vs_true_state": 0.9240387875653813,
+    "accuracy_after_matching": 0.9693251533742331,
+    "silhouette": 0.6838209889840341,
+    "k": 3
+  },
+  "gmm_em_numpy": {
+    "ari_vs_true_state": 0.8652927833003161,
+    "accuracy_after_matching": 0.950920245398773,
+    "silhouette": 0.6518548567231691,
+    "k": 3,
+    "bic_by_k": {
+      "2": 4352.8,
+      "3": 4073.1,
+      "4": 3692.2,
+      "5": 3599.9,
+      "6": 3470.3
+    }
+  },
+  "hierarchical_numpy": {
+    "ari_vs_true_state": 0.6922165485496002,
+    "accuracy_after_matching": 0.8045454545454546,
+    "silhouette": 0.4232488218635105,
+    "linkage": "complete",
+    "level": "conversation",
+    "ari_by_linkage": {
+      "single": -0.008,
+      "complete": 0.692,
+      "average": 0.66,
+      "ward": 0.371
+    }
   }
 }

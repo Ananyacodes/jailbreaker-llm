@@ -180,6 +180,34 @@ for a small model it may be slower than BF16.
 | `src/mutation/` | Generates variants of a successful attack via the technique library; clusters transcripts by embedding similarity (not TF-IDF) to find transferable patterns, dropping revoked targets |
 | `src/eval/` | Runs a campaign (`run_campaign.py`, resumable), redacts transcripts (`redact.py`), produces a generic scored report (`report.py`) |
 | `scripts/relabel_for_judge.py` | Converts a binary refusal/compliance benchmark into the judge's 3-class scheme |
+| `src/analysis/unsupervised.py` | Review 2 PCA, K-means, Gaussian mixture EM, and hierarchical clustering on the synthetic campaign |
+
+## ML PBL Review 2
+
+Run `python main_analysis.py` to generate the synthetic campaign and execute
+the full eight-step analysis. Step 6 uses NumPy implementations of PCA,
+K-means, Gaussian mixture EM, and agglomerative clustering. The models use
+judge probabilities without state labels. Labels are used afterward to
+evaluate the clusters. Results and plots are written to `outputs/analysis/`.
+
+On the generated 978-turn, 220-conversation dataset (seed 42), K-means
+reached adjusted Rand index 0.924 and 96.9% accuracy after matching cluster
+names to the hidden states. GMM reached ARI 0.865; complete-linkage
+hierarchical clustering reached ARI 0.692 on conversation-level features.
+These numbers measure recovery of **simulated** states and do not establish
+attack effectiveness or performance on real campaigns.
+
+Run the focused checks with `python -m pytest tests/test_unsupervised.py`.
+
+For the course plan's request to avoid Python libraries in the submitted
+mathematical-model script, run `python review2_kmeans_pure_python.py` from
+the repository root. This standalone K-means implementation has **no
+imports**. It reads the included `data/review2_judge_scores.csv`, standardizes
+the three judge probabilities, assigns each row to its nearest centroid,
+and updates each centroid to the mean of its assigned rows. It uses
+deterministic farthest-first initialization; the larger NumPy analysis above
+uses k-means++ and multiple restarts. On the same 978 synthetic rows, the
+standalone script gives 96.9% matched accuracy after cluster fitting.
 
 ## build order
 

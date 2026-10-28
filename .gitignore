@@ -7,3 +7,4 @@ data/transcripts/
 data/judge_train/
 .wandb/
 *.egg-info/
+data/external/
